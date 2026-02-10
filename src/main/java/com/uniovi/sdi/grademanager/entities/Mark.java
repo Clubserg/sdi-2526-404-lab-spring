@@ -1,6 +1,10 @@
 package com.uniovi.sdi.grademanager.entities;
+import jakarta.persistence.*;
 
+@Entity
 public class Mark {
+    @Id
+    @GeneratedValue
     private Long id;
     private String description;
     private Double score;
