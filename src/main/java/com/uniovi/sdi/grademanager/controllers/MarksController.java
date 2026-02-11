@@ -24,15 +24,10 @@ public class MarksController {
         return "redirect:/mark/list";
     }
 
-    @RequestMapping(path = "/mark/list",  method = RequestMethod.GET) // ERROR
+    @RequestMapping(value = "/mark/list",  method = RequestMethod.GET) // ERROR
     public String getList(Model model) {
         model.addAttribute("markList", marksService.getMarks());
         return "mark/list";
-    }
-
-    @GetMapping(value = "/mark/details/{id}")
-    public String getDetails(@PathVariable Long id) {
-        return marksService.getMark(id).toString();
     }
 
     @GetMapping(value = "/mark/add")
@@ -41,7 +36,7 @@ public class MarksController {
     }
 
     @GetMapping("/mark/details/{id}")
-    public String getDetail(Model model, @PathVariable Long id) {
+    public String getDetails(Model model, @PathVariable Long id) {
         model.addAttribute("mark", marksService.getMark(id));
         return "mark/details";
     }
