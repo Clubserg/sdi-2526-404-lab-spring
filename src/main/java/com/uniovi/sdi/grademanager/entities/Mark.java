@@ -1,4 +1,5 @@
 package com.uniovi.sdi.grademanager.entities;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -6,23 +7,33 @@ public class Mark {
     @Id
     @GeneratedValue
     private Long id;
+
     private String description;
     private Double score;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Mark() {
     }
+
     public Mark(Long id, String description, Double score) {
         this.id = id;
         this.description = description;
         this.score = score;
     }
+
+    public Mark(String description, Double score, User user) {
+        super();
+        this.description = description;
+        this.score = score;
+        this.user = user;
+    }
     @Override
     public String toString() {
         return "Mark{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", score=" + score +
-                '}';
+                "id=" + id +   ", description='" + description + '\'' + ", score=" + score +  '}';
     }
 
     public Long getId() {
@@ -36,7 +47,6 @@ public class Mark {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -47,5 +57,13 @@ public class Mark {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

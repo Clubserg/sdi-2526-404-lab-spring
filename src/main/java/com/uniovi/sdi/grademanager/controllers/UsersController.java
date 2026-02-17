@@ -1,0 +1,52 @@
+package com.uniovi.sdi.grademanager.controllers;
+import com.uniovi.sdi.grademanager.entities.User;
+import com.uniovi.sdi.grademanager.services.UsersService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+@Controller
+public class UsersController {
+    private final UsersService usersService;
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
+    }
+    @GetMapping("/user/list")
+    public String getListado(Model model) {
+        model.addAttribute("usersList", usersService.getUsers());
+        return "user/list";
+    }
+    @GetMapping(value = "/user/add")
+    public String getUser(Model model) {
+        model.addAttribute("usersList", usersService.getUsers());
+        return "user/add";
+    }
+    @PostMapping(value = "/user/add")
+    public String setUser(@ModelAttribute User user) {
+        usersService.addUser(user);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/user/details/{id}")
+    public String getDetail(Model model, @PathVariable Long id) {
+        model.addAttribute("user", usersService.getUser(id));
+        return "user/details";
+    }
+
+    @GetMapping("/user/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        usersService.deleteUser(id);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping(value = "/user/edit/{id}")
+    public String getEdit(Model model, @PathVariable Long id) {
+        User user = usersService.getUser(id);
+        model.addAttribute("user", user);
+        return "user/edit";
+    }
+    @PostMapping(value = "/user/edit/{id}")
+    public String setEdit(@PathVariable Long id, @ModelAttribute User user) {
+        usersService.addUser(user);
+        return "redirect:/user/details/" + id;
+    }
+}
