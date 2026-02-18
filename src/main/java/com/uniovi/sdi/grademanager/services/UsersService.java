@@ -31,6 +31,9 @@ public class UsersService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         usersRepository.save(user);
     }
+    public void updateUser(User originalUser) {
+        usersRepository.save(originalUser);
+    }
 
     public User getUserByDni(String dni) {
         return usersRepository.findByDni(dni);
@@ -39,4 +42,5 @@ public class UsersService {
     public void deleteUser(Long id) {
         usersRepository.deleteById(id);
     }
+
 }

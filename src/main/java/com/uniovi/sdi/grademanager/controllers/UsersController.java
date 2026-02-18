@@ -1,4 +1,5 @@
 package com.uniovi.sdi.grademanager.controllers;
+import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
@@ -58,7 +59,11 @@ public class UsersController {
     }
     @PostMapping(value = "/user/edit/{id}")
     public String setEdit(@PathVariable Long id, @ModelAttribute User user) {
-        usersService.addUser(user);
+        User originalUser = usersService.getUser(id);
+        originalUser.setDni(user.getDni());
+        originalUser.setName(user.getName());
+        originalUser.setLastName(user.getLastName());
+        usersService.updateUser(originalUser);
         return "redirect:/user/details/" + id;
     }
 
