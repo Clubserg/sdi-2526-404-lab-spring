@@ -3,9 +3,11 @@ package com.uniovi.sdi.grademanager.controllers;
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.services.MarksService;
 import com.uniovi.sdi.grademanager.services.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniovi.sdi.grademanager.validators.GradeValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -13,24 +15,33 @@ public class MarksController {
 
     private final MarksService marksService;
     private final UsersService usersService;
+    private final GradeValidator gradeValidator;
 
-    public MarksController(MarksService marksService, UsersService usersService) {
+    public MarksController(MarksService marksService, UsersService usersService, GradeValidator gradeValidator) {
         this.marksService = marksService;
         this.usersService = usersService;
+        this.gradeValidator = gradeValidator;
     }
 
+
     @PostMapping("/mark/add")
-    public String setMark(@ModelAttribute Mark mark) {
+    public String setMark(@Validated @ModelAttribute Mark mark, BindingResult result, Model model) {
+        gradeValidator.validate(mark, result);
+        if (result.hasErrors()) {
+            model.addAttribute("usersList", usersService.getUsers());
+            return "mark/add";
+        }
         marksService.addMark(mark);
-        return "mark/add";
+        return "redirect:/mark/list"; // Cambiado a redirect para evitar re-envíos del formulario
     }
+
     @RequestMapping("/mark/delete/{id}")
     public String deleteMark(@PathVariable Long id) {
         marksService.deleteMark(id);
         return "redirect:/mark/list";
     }
 
-    @GetMapping ("/mark/list")
+    @GetMapping("/mark/list")
     public String getList(Model model) {
         model.addAttribute("marksList", marksService.getMarks());
         return "mark/list";
@@ -38,6 +49,7 @@ public class MarksController {
 
     @GetMapping("/mark/add")
     public String getMark(Model model) {
+        model.addAttribute("mark", new Mark()); // Enviamos un objeto vacío para el binding
         model.addAttribute("usersList", usersService.getUsers());
         return "mark/add";
     }
@@ -55,6 +67,7 @@ public class MarksController {
         return "mark/edit";
     }
 
+
     @PostMapping(value = "/mark/edit/{id}")
     public String setEdit(@ModelAttribute Mark mark, @PathVariable Long id) {
         Mark originalMark = marksService.getMark(id);
@@ -66,9 +79,7 @@ public class MarksController {
 
     @GetMapping("/mark/list/update")
     public String updateList(Model model){
-        model.addAttribute("marksList", marksService.getMarks() );
+        model.addAttribute("marksList", marksService.getMarks());
         return "mark/list :: marksTable";
     }
-
-
 }

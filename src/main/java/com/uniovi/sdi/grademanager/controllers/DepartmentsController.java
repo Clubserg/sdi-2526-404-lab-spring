@@ -2,9 +2,12 @@ package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.Department;
 import com.uniovi.sdi.grademanager.services.DepartmentsService;
+import com.uniovi.sdi.grademanager.validators.DepartmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -12,6 +15,11 @@ public class DepartmentsController {
 
     @Autowired
     private DepartmentsService departmentsService;
+    private final DepartmentValidator departmentValidator;
+
+    public DepartmentsController(DepartmentValidator departmentValidator) {
+        this.departmentValidator = departmentValidator;
+    }
 
     @GetMapping("/departments")
     public String getDepartments(Model model) {
@@ -38,7 +46,11 @@ public class DepartmentsController {
     }
 
     @PostMapping(value = "/departments/add")
-    public String setDepartment(@ModelAttribute Department department) {
+    public String setDepartment(@Validated @ModelAttribute Department department, BindingResult result) {
+        departmentValidator.validate(department, result);
+        if (result.hasErrors()) {
+            return "department/add";
+        }
         departmentsService.addDepartment(department);
         return "redirect:/departments";
     }
@@ -49,7 +61,6 @@ public class DepartmentsController {
         return "department/edit";
     }
 
-    // Procesar la edición
     @PostMapping("/departments/edit/{id}")
     public String setEdit(@PathVariable Long id, @ModelAttribute Department department) {
         department.setId(id);

@@ -12,32 +12,8 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="#"></a>
-  <img src="/images/student-48.png" alt="logo"/>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#my-navbarColor02">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="my-navbarColor02">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">Gestión de notas</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/mark/list">Ver Notas</a>
-          <a class="dropdown-item" href="/mark/add">Agregar Nota</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown active">
-        <a class="nav-link dropdown-toggle" href="#" id="deptDropdown" data-toggle="dropdown">Gestión de Departamentos</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/departments">Ver Departamentos</a>
-          <a class="dropdown-item" href="/departments/add">Agregar Departamento</a>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+<!-- nav.html -->
+<nav th:replace="fragments/nav"></nav>
 
 <div class="container" id="main-container">
   <h2 class="mt-4">Agregar departamento</h2>
@@ -47,6 +23,7 @@
       <label class="control-label col-sm-2" for="code">Código:</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="code" name="code" placeholder="Ejemplo: D-INF" required="true" />
+        <span class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></span>
       </div>
     </div>
 
@@ -54,6 +31,7 @@
       <label class="control-label col-sm-2" for="name">Nombre:</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="name" name="name" placeholder="Ejemplo: Informática" required="true" />
+        <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
       </div>
     </div>
 
@@ -61,6 +39,7 @@
       <label class="control-label col-sm-2" for="faculty">Facultad:</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="faculty" name="faculty" placeholder="Ejemplo: Escuela de Ingeniería" required="true" />
+        <span class="text-danger" th:if="${#fields.hasErrors('faculty')}" th:errors="*{faculty}"></span>
       </div>
     </div>
 
@@ -68,6 +47,7 @@
       <label class="control-label col-sm-2" for="phone">Teléfono:</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="phone" name="phone" placeholder="Ejemplo: 985100000" required="true" />
+        <span class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
       </div>
     </div>
 
@@ -75,6 +55,7 @@
       <label class="control-label col-sm-2" for="professors">Número de Profesores:</label>
       <div class="col-sm-10">
         <input type="number" class="form-control" id="professors" name="professors" placeholder="Cantidad de docentes" required="true" />
+        <span class="text-danger" th:if="${#fields.hasErrors('professors')}" th:errors="*{professors}"></span>
       </div>
     </div>
 
