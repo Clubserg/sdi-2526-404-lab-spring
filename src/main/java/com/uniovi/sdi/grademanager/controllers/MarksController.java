@@ -1,6 +1,7 @@
 package com.uniovi.sdi.grademanager.controllers;
 
 import com.uniovi.sdi.grademanager.entities.Mark;
+import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.services.MarksService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import com.uniovi.sdi.grademanager.validators.GradeValidator;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,9 +48,12 @@ public class MarksController {
     }
 
     @GetMapping("/mark/list")
-    public String getList(Model model) {
-        model.addAttribute("marksList", marksService.getMarks());
-        return "mark/list";}
+    public String getList(Model model, Principal principal){
+        String dni = principal.getName(); // DNI es el name de la autenticación
+        User user = usersService.getUserByDni(dni);
+        model.addAttribute("marksList", marksService.getMarksForUser(user) );
+        return "mark/list";
+    }
 
     @GetMapping("/mark/add")
     public String getMark(Model model) {
@@ -81,8 +86,10 @@ public class MarksController {
     }
 
     @GetMapping("/mark/list/update")
-    public String updateList(Model model){
-        model.addAttribute("marksList", marksService.getMarks());
+    public String updateList(Model model, Principal principal) {
+        String dni = principal.getName(); // DNI es el name de la autenticación
+        User user = usersService.getUserByDni(dni);
+        model.addAttribute("marksList", marksService.getMarksForUser(user));
         return "mark/list :: marksTable";
     }
 
