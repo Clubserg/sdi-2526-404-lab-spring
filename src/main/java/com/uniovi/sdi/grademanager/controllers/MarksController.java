@@ -85,4 +85,15 @@ public class MarksController {
         model.addAttribute("marksList", marksService.getMarks());
         return "mark/list :: marksTable";
     }
+
+    @GetMapping("/mark/{id}/resend")
+    public String setResendTrue(@PathVariable Long id) {
+        marksService.setMarkResend(true, id);
+        return "redirect:/mark/list";
+    }
+    @GetMapping("/mark/{id}/noresend")
+    public String setResendFalse(@PathVariable Long id) {
+        marksService.setMarkResend(false, id);
+        return "redirect:/mark/list";
+    }
 }
