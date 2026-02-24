@@ -1,6 +1,7 @@
 package com.uniovi.sdi.grademanager.controllers;
 import com.uniovi.sdi.grademanager.entities.Mark;
 import com.uniovi.sdi.grademanager.entities.User;
+import com.uniovi.sdi.grademanager.services.RolesService;
 import com.uniovi.sdi.grademanager.services.SecurityService;
 import com.uniovi.sdi.grademanager.services.UsersService;
 import org.springframework.security.core.Authentication;
@@ -17,19 +18,22 @@ public class UsersController {
     private final UsersService usersService;
     private final SecurityService securityService;
     private final SignUpFormValidator signUpFormValidator;
+    private final RolesService rolesService;
     public UsersController(UsersService usersService, SecurityService securityService, SignUpFormValidator
-            signUpFormValidator) {
+            signUpFormValidator, RolesService rolesService) {
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
+        this.rolesService = rolesService;
     }
     @GetMapping("/user/list")
     public String getListado(Model model) {
         model.addAttribute("usersList", usersService.getUsers());
         return "user/list";
     }
-    @GetMapping(value = "/user/add")
+    @GetMapping( "/user/add")
     public String getUser(Model model) {
+        model.addAttribute("rolesList", rolesService.getRoles());
         model.addAttribute("usersList", usersService.getUsers());
         return "user/add";
     }
@@ -73,9 +77,16 @@ public class UsersController {
         if (result.hasErrors()) {
             return "signup";
         }
+        user.setRole(rolesService.getRoles()[0]);
         usersService.addUser(user);
         securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
         return "redirect:home";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("user", new User());
+        return "signup";
     }
 
     @GetMapping( "/login")
@@ -88,7 +99,7 @@ public class UsersController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String dni = auth.getName();
         User activeUser = usersService.getUserByDni(dni);
-        model.addAttribute("markList", activeUser.getMarks());
+        model.addAttribute("marksList", activeUser.getMarks());
         return "home";
     }
 }

@@ -20,13 +20,11 @@ public class MarksController {
     private final MarksService marksService;
     private final UsersService usersService;
     private final GradeValidator gradeValidator;
-    private final HttpSession httpSession;
 
     public MarksController(MarksService marksService, UsersService usersService, GradeValidator gradeValidator, HttpSession httpSession) {
         this.marksService = marksService;
         this.usersService = usersService;
         this.gradeValidator = gradeValidator;
-        this.httpSession = httpSession;
     }
 
 
@@ -49,12 +47,8 @@ public class MarksController {
 
     @GetMapping("/mark/list")
     public String getList(Model model) {
-        Set<Mark> consultedList = (Set<Mark>) (httpSession.getAttribute("consultedList") != null ?
-                httpSession.getAttribute("consultedList") : new HashSet<>());
-        model.addAttribute("consultedList", consultedList);
         model.addAttribute("marksList", marksService.getMarks());
-        return "mark/list";
-    }
+        return "mark/list";}
 
     @GetMapping("/mark/add")
     public String getMark(Model model) {
