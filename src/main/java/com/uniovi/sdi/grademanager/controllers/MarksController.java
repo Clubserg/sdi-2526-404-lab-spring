@@ -48,10 +48,16 @@ public class MarksController {
     }
 
     @GetMapping("/mark/list")
-    public String getList(Model model, Principal principal){
-        String dni = principal.getName(); // DNI es el name de la autenticación
+    public String getList(Model model, Principal principal, @RequestParam(value = "", required = false) String
+            searchText) {
+        String dni = principal.getName();
         User user = usersService.getUserByDni(dni);
-        model.addAttribute("marksList", marksService.getMarksForUser(user) );
+        if (searchText != null && !searchText.isEmpty()) {
+            model.addAttribute("marksList",
+                    marksService.searchMarksByDescriptionAndNameForUser(searchText, user));
+        } else {
+            model.addAttribute("marksList", marksService.getMarksForUser(user));
+        }
         return "mark/list";
     }
 
