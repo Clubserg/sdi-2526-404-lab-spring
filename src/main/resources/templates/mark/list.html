@@ -4,11 +4,9 @@
 <head th:replace="fragments/head"><title> Página de listas</title></head>
 <body>
 
-<!-- nav.html -->
 <nav th:replace="fragments/nav"></nav>
 
-
-<div class="container" id="main-container">
+<div class="container" id="main-container" xmlns:sec="http://www.w3.org/1999/xhtml">
     <h2>Notas</h2>
 
     <form class="form-inline" action="/mark/list">
@@ -24,81 +22,20 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         $("#updateButton").click(function () {
-         let page = /*[[${param.page != null and !#lists.isEmpty(param.page) ? param.page[0] : null}]]*/ null;
-         let urlUpdate = '/mark/list/update';
-         if (page != null) {
-         urlUpdate += "?page=" +page;
-         }
-         $("#marksTable").load(urlUpdate);
+            let page = /*[[${param.page != null and !#lists.isEmpty(param.page) ? param.page[0] : null}]]*/ null;
+            let urlUpdate = '/mark/list/update';
+            if (page != null) {
+                urlUpdate += "?page=" +page;
+            }
+            $("#marksTable").load(urlUpdate);
         });
         /*]]>*/
     </script>
-    <div class="table-responsive">
-        <table class="table table-hover" th:fragment="marksTable" id="marksTable">
-        <thead>
-            <tr>
-                <th scope="col">id</th>
-                <th scope="col">Descripción</th>
-                <th scope="col">Puntuación</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="mark : ${marksList}">
-                <td scope="row" th:text="${mark.id}"> 1</td>
-                <td th:text="${mark.description}"> Ejercicio 1</td>
-                <td th:text="${mark.score}">10</td>
-                <td><a th:href="${'/mark/details/' + mark.id}">detalles</a></td>
-                <td><a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/edit/' + mark.id}">modificar</a>
-                    <div sec:authorize="hasRole('ROLE_STUDENT')" >
-                        <div th:if="${mark.resend}">
-                            <button type="button" th:id="${'resendButton' + mark.id}"
-                                    class="btn btn-success">Reenviar</button>
-                            <script th:inline="javascript">
-                                /*<![CDATA[*/
-                                 $("#resendButton" + "[[${mark.id}]]").click(function () {
-                                 $.get("/mark/[[${mark.id}]]/noresend", function () {
-                                 let page = /*[[${param.page != null and !#lists.isEmpty(param.page) ? param.page[0] : null}]]*/ null;
-                                 let urlUpdate = '/mark/list/update';
-                                 if (page != null) {
-                                 urlUpdate += "?page=" +page;
-                                 }
-                                 $("#marksTable").load(urlUpdate);
-                                 });
-                                 });
-                                 /*]]>*/
-                            </script>
-                           </div>
-                            <div th:unless="${mark.resend}">
-                                <button type="button" th:id="${'noresendButton' + mark.id}"
-                                        class="btn btn-info">No reenviar</button>
-                                <script th:inline="javascript">
-                                    /*<![CDATA[*/
-                                     $("#noresendButton" + "[[${mark.id}]]").click(function () {
-                                     $.get("/mark/[[${mark.id}]]/resend", function () {
-                                     let page = /*[[${param.page != null and !#lists.isEmpty(param.page) ? param.page[0] : null}]]*/ null;
-                                     let urlUpdate = '/mark/list/update';
-                                     if (page != null) {
-                                     urlUpdate += "?page=" +page;
-                                     }
-                                     $("#marksTable").load(urlUpdate);
-                                     });
-                                     });
-                                     /*]]>*/
-                                </script>
-                            </div>
-                        </div>
-                    </td>
-                  <td><a sec:authorize="hasRole('PROFESSOR')" th:href="${'/mark/delete/' + mark.id}">eliminar</a></td>
-             </tr>
-             </tbody>
-        </table>
-     </div>
-    <div th:if="${#lists.isEmpty(marksList)}"> No marks </div>
-    <footer th:replace="fragments/pagination"></footer>
- </div>
-    <footer th:replace="fragments/footer"></footer>
-  </body>
+
+    <div th:replace="fragments/marksList :: marksList"></div>
+
+</div>
+
+<footer th:replace="fragments/footer"></footer>
+</body>
 </html>
