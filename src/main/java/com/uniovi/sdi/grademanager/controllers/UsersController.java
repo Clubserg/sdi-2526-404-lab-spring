@@ -33,8 +33,8 @@ public class UsersController {
         this.marksService = marksService;
     }
     @GetMapping("/user/list")
-    public String getListado(Model model) {
-        model.addAttribute("usersList", usersService.getUsers());
+    public String getListado(Model model, @RequestParam(value = "searchText", required = false) String searchText) {
+        model.addAttribute("usersList", usersService.getUsers(searchText));
         return "user/list";
     }
     @GetMapping( "/user/add")

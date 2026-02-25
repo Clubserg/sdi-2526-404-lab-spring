@@ -24,6 +24,14 @@ public class UsersService {
         usersRepository.findAll().forEach(users::add);
         return users;
     }
+    public List<User> getUsers(String searchText) {
+        if (searchText != null && !searchText.isEmpty()) {
+            return usersRepository.searchByNameLastNameAndDni(searchText);
+        }
+        List<User> users = new ArrayList<>();
+        usersRepository.findAll().forEach(users::add);
+        return users;
+    }
     public User getUser(Long id) {
         return usersRepository.findById(id).orElse(null);
     }
