@@ -1,43 +1,10 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Notaneitor - Departamentos</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head"><title> Página de adicion de notas</title></head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#"></a>
-    <img src="/images/student-48.png" alt="logo"/>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#my-navbarColor02">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="my-navbarColor02">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown">Gestión de notas</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/mark/list">Ver Notas</a>
-                    <a class="dropdown-item" href="/mark/add">Agregar Nota</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="deptDropdown" data-toggle="dropdown">Gestión de Departamentos</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/departments">Ver Departamentos</a>
-                    <a class="dropdown-item" href="/departments/add">Agregar Departamento</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav th:replace="fragments/nav"></nav>
 
 <div class="container" id="main-container">
     <h2 class="mt-4">Departamentos</h2>
@@ -63,9 +30,9 @@
                 <td th:text="${dept.faculty}">Escuela de Ingeniería</td>
                 <td th:text="${dept.phone}">985101010</td>
                 <td th:text="${dept.professors}">25</td>
-                <td><a th:href="${'/departments/details/' + dept.id}"> detalles</a></td>
-                <td><a th:href="${'/departments/edit/' + dept.id}"> modificar</a></td>
-                <td><a th:href="${'/departments/delete/' + dept.id}"> eliminar</a></td>
+                <td><a sec:authorize="hasAnyRole('PROFESSOR', 'ADMIN')" th:href="${'/departments/details/' + dept.id}"> detalles</a></td>
+                <td><a sec:authorize="hasRole('ADMIN')" th:href="${'/departments/edit/' + dept.id}"> modificar</a></td>
+                <td><a sec:authorize="hasRole('ADMIN')" th:href="${'/departments/delete/' + dept.id}"> eliminar</a></td>
             </tr>
             </tbody>
         </table>

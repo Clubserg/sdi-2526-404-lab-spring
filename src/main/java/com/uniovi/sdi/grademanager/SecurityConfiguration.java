@@ -45,6 +45,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/mark/**").hasAnyAuthority("ROLE_STUDENT", "ROLE_PROFESSOR",
                                 "ROLE_ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/departments/add").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/departments/edit/*").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/departments/delete/*").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/departments/details/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_PROFESSOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

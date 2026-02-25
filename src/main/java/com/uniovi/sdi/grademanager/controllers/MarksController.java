@@ -25,7 +25,7 @@ public class MarksController {
     private final UsersService usersService;
     private final GradeValidator gradeValidator;
 
-    public MarksController(MarksService marksService, UsersService usersService, GradeValidator gradeValidator, HttpSession httpSession) {
+    public MarksController(MarksService marksService, UsersService usersService, GradeValidator gradeValidator) {
         this.marksService = marksService;
         this.usersService = usersService;
         this.gradeValidator = gradeValidator;
@@ -40,7 +40,7 @@ public class MarksController {
             return "mark/add";
         }
         marksService.addMark(mark);
-        return "redirect:/mark/list"; // Cambiado a redirect para evitar re-envíos del formulario
+        return "redirect:/mark/list";
     }
 
     @RequestMapping("/mark/delete/{id}")

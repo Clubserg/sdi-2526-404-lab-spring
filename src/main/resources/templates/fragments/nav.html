@@ -36,13 +36,13 @@
                 </div>
             </li>
 
-            <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+            <li class="nav-item dropdown" sec:authorize="isAuthenticated()" >
                 <a class="nav-link dropdown-toggle" href="#" id="profesorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Gestión de departamentos
                 </a>
                 <div class="dropdown-menu" aria-labelledby="profesorDropdown">
                     <a class="dropdown-item" href="/departments">Ver departamentos</a>
-                    <a class="dropdown-item" href="/departments/add">Añadir departamento</a>
+                    <a class="dropdown-item" href="/departments/add" sec:authorize="hasRole('ROLE_ADMIN')">Añadir departamento</a>
                 </div>
             </li>
         </ul>
