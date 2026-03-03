@@ -1,9 +1,6 @@
 package com.uniovi.sdi.grademanager;
 
-import com.uniovi.sdi.grademanager.pageobjects.PO_HomeView;
-import com.uniovi.sdi.grademanager.pageobjects.PO_Properties;
-import com.uniovi.sdi.grademanager.pageobjects.PO_SignUpView;
-import com.uniovi.sdi.grademanager.pageobjects.PO_View;
+import com.uniovi.sdi.grademanager.pageobjects.*;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -131,26 +128,70 @@ class GradeManagerApplicationTests {
     }
 
     @Test
-    @Order(7)
-    void PR07() {
-        Assertions.assertTrue(true);
-    }
-
-    @Test
-    @Order(8)
-    void PR08() {
-        Assertions.assertTrue(true);
-    }
-
-    @Test
     @Order(9)
-    void PR09() {
-        Assertions.assertTrue(true);
+    public void PR07() {
+        //Vamos al formulario de logueo.
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        //Rellenamos el formulario
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+        //Comprobamos que entramos en la pagina privada de Alumno
+        String checkText =  "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result. getFirst().getText());
     }
 
+    // PR08: Identificación válida con usuario de ROL profesor (99999993D/123456)
     @Test
     @Order(10)
-    void PR10() {
-        Assertions.assertTrue(true);
+    public void PR08() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999993D", "123456");
+        // Los profesores suelen ver "Notas del usuario" o un texto de gestión
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.getFirst().getText());
+    }
+
+    // PR09: Identificación válida con usuario de ROL Administrador
+    @Test
+    @Order(11)
+    public void PR09() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999988F", "123456");
+
+        // IMPORTANTE: En tu list.html el título es <h2>Usuarios</h2>
+        // Usamos "id" y "main-container" para que clickOption no falle con las aserciones internas
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", "Usuarios");
+        Assertions.assertFalse(result.isEmpty());
+    }
+
+    // PR10: Identificación inválida con usuario de ROL alumno (99999990A/erronea)
+    // Nota: El enunciado decía 123456 pero "inválida", así que uso una contraseña mal para que falle.
+    @Test
+    @Order(12)
+    public void PR10() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "contraseña_falsa");
+        // Comprobamos que seguimos en la pantalla de login (no entró)
+        PO_View.checkElementBy(driver, "text", "Identifícate");
+    }
+
+    @Test
+    @Order(13)
+    public void PR11() {
+        // 1. Loguearse
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "99999990A", "123456");
+
+        // 2. Desconectarse
+        // Usamos el ID del botón de idioma como destino porque es único y seguro (sin tildes)
+        PO_NavView.clickOption(driver, "logout", "id", "btnLanguage");
+
+        // 3. Verificación final: Buscamos el texto de login traducido (Identifícate)
+        // Esto confirma que estamos en la Home y que el usuario ya no está autenticado
+        String loginText = PO_HomeView.getP().getString("login.message", PO_Properties.getSPANISH());
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", loginText);
+
+        Assertions.assertFalse(result.isEmpty(), "No se encontró el enlace de login tras el logout");
     }
 }
