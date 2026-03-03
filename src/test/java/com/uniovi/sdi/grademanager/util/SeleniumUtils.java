@@ -1,4 +1,4 @@
-package com.uniovi.sdi.grademanager;
+package com.uniovi.sdi.grademanager.util;
 
 
 import java.time.Duration;
