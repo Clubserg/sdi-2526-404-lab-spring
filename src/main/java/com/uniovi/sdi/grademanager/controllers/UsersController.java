@@ -33,9 +33,18 @@ public class UsersController {
         this.marksService = marksService;
     }
     @GetMapping("/user/list")
-    public String getListado(Model model, @RequestParam(value = "searchText", required = false) String searchText) {
-        model.addAttribute("usersList", usersService.getUsers(searchText));
+    public String getListado(Model model, Pageable pageable, @RequestParam(value = "searchText", required = false) String searchText) {
+        Page<User> users = usersService.getUsers(pageable, searchText);
+        model.addAttribute("usersList", users.getContent());
+        model.addAttribute("page", users); // Necesario para el fragmento de paginación
         return "user/list";
+    }
+    @RequestMapping("/user/list/update")
+    public String updateList(Model model, Pageable pageable, @RequestParam(value = "searchText", required = false) String searchText) {
+        Page<User> users = usersService.getUsers(pageable, searchText);
+        model.addAttribute("usersList", users.getContent());
+        model.addAttribute("page", users);
+        return "user/list :: usersList";
     }
     @GetMapping( "/user/add")
     public String getUser(Model model) {

@@ -3,6 +3,8 @@ import java.util.*;
 import com.uniovi.sdi.grademanager.entities.User;
 import com.uniovi.sdi.grademanager.repositories.UsersRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 @Service
@@ -24,12 +26,13 @@ public class UsersService {
         usersRepository.findAll().forEach(users::add);
         return users;
     }
-    public List<User> getUsers(String searchText) {
+    public Page<User> getUsers(Pageable pageable, String searchText) {
+        Page<User> users;
         if (searchText != null && !searchText.isEmpty()) {
-            return usersRepository.searchByNameLastNameAndDni(searchText);
+            users = usersRepository.searchByNameLastNameAndDni(pageable, searchText);
+        } else {
+            users = usersRepository.findAll(pageable);
         }
-        List<User> users = new ArrayList<>();
-        usersRepository.findAll().forEach(users::add);
         return users;
     }
     public User getUser(Long id) {

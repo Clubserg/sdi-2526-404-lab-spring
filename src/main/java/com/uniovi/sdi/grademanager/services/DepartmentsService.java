@@ -1,7 +1,11 @@
 package com.uniovi.sdi.grademanager.services;
 
 import com.uniovi.sdi.grademanager.entities.Department;
+import com.uniovi.sdi.grademanager.repositories.DepartmentsRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -11,6 +15,8 @@ import java.util.List;
 public class DepartmentsService {
 
     private final List<Department> departmentList = new LinkedList<>();
+    @Autowired
+    private DepartmentsRepository departmentsRepository;
 
     @PostConstruct
     public void init() {
@@ -29,6 +35,14 @@ public class DepartmentsService {
                 .filter(d -> d.getId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Page<Department> getDepartments(Pageable pageable, String searchText) {
+
+        if (searchText != null && !searchText.isEmpty()) {
+            return departmentsRepository.searchByName(pageable, searchText);
+        }
+        return departmentsRepository.findAll(pageable);
     }
 
 

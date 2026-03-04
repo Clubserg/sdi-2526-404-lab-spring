@@ -4,6 +4,8 @@ import com.uniovi.sdi.grademanager.entities.Department;
 import com.uniovi.sdi.grademanager.services.DepartmentsService;
 import com.uniovi.sdi.grademanager.validators.DepartmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,9 +24,22 @@ public class DepartmentsController {
     }
 
     @GetMapping("/departments")
-    public String getDepartments(Model model) {
-        model.addAttribute("departmentList", departmentsService.getDepartmentList());
+    public String getDepartments(Model model, Pageable pageable,
+                                 @RequestParam(value = "searchText", required = false) String searchText) {
+        Page<Department> departments = departmentsService.getDepartments(pageable, searchText);
+        model.addAttribute("departmentList", departments.getContent());
+        model.addAttribute("page", departments);
         return "department/list";
+    }
+    @RequestMapping("/departments/update")
+    public String updateList(Model model, Pageable pageable, @RequestParam(value = "searchText", required = false) String searchText) {
+        Page<Department> departments = departmentsService.getDepartments(pageable, searchText);
+
+        model.addAttribute("departmentList", departments.getContent());
+        model.addAttribute("page", departments);
+
+        // "nombre_archivo_html :: nombre_fragmento"
+        return "department/list :: tableDepartments";
     }
 
     @GetMapping("/departments/details/{id}")
